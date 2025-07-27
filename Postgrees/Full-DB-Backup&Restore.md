@@ -3,11 +3,10 @@ form one database to current database without lossing any
 DB;
 Permission;
 Table;
-this is so beautiful db  restore system ;
 </p>
 
 
-<p>But The problem is its only work on server base no manageable DB like AWS RDS will work on it </p>
+<p>Its only work on server base no manageable DB like AWS RDS will work on it </p>
 
 
 <p><h4>This will Restore full of DataBase for One Server to another Server</h4></p>
@@ -15,21 +14,28 @@ this is so beautiful db  restore system ;
 
 <h3> BACKUP full DB FROM EXISTING DB  </h3>
 
+
+Run below cmd on server end.
+
 ```bash
 pg_dumpall \
-    --host=cmsdb.ideahubbd.com \
+    --host="domain/iP address of server" \
     --port=5432 \
-    --username=ihub \
+    --username="DB admin user name" \
     --file=full_backup.sql
 ```
 
+After success fully end the backup move/copy the full_backup.sql to new server then run below cmd. 
+
 <h3> RESTORE TO CURRRENT DB FROM EXISTING DB </h3>
+
+
 
 ```bash
 
 psql \
     --host=localhost \
     --port=5432 \
-    --username=postgres \
+    --username="DB admin user name" \
     --file=full_backup.sql
 ```

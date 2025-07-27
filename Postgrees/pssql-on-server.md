@@ -42,15 +42,6 @@ after successfully dump all cmd execute tranfer this file to new server
 Run this cmd: 
 
 
-
-```bash
-
-scp -i server.pem ubuntu@184.72.24.186:/home/ubuntu/awscliv2.zip /home/ubuntu/ 
-```
-
-```bash
-scp -i amdserver.pem -r ubuntu@52.8.90.45:/home/ubuntu/website/ /home/ubuntu/websites   #with all dir subforlder
-```
 <h1> if it is  manages RDS like AWS </h1>
 
 example:
@@ -61,7 +52,7 @@ psql -h your-rds-endpoint -U master-username -d postgres -f /tmp/all_databases.s
 
 ```bash
 export PGPASSWORD='trd$87809909787Xc*99LTju3OrqzM#VVb'
-psql -h cmsdb.ideahubbd.com -U ihub -d postgres -f /tmp/all_databases.sql
+psql -h server-ip/domain -U username -d dbname -f /tmp/all_databases.sql
 ```
 Step-5 :
 
@@ -105,12 +96,13 @@ BEGIN
     FOR v_name IN 
         SELECT table_name FROM information_schema.views WHERE table_schema = 'public'
     LOOP 
-        EXECUTE format('ALTER VIEW public.%I OWNER TO ajpproductiondbuser', v_name);
+        EXECUTE format('ALTER VIEW public.%I OWNER TO dbuser', v_name);
     END LOOP;
 END $$;
 
 ```
 
+# Fetch DB base site 
  ```bash
-SELECT pg_size_pretty(pg_database_size('ajpproductiondb')) AS db_size;
+SELECT pg_size_pretty(pg_database_size('db-name')) AS db_size;
 ```

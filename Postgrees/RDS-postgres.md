@@ -18,7 +18,7 @@ Here is an
 
 example1:
 
-     PGPASSWORD='trd$Xc*LTjkkkju3OrqzM#VVb' pg_dump -h cmsdb.ideahubbd.com -U ihub-d -d ajpproductiondb -F c -b -v -f /home/ubuntu/ajp-bd-backup/ajpproductiondb-backup-26-10-24.dump
+     PGPASSWORD='trd$Xc*LTjkkkju3OrqzM#VVb' pg_dump -h host-name -U username -d -d ajpproductiondb -F c -b -v -f /home/ubuntu/filename.dump
 
 
 
@@ -61,17 +61,17 @@ step 1 :
     #!/bin/bash
 
     # Database and S3 credentials
-    DB_HOST="cmsdb.ideahubbd.com"
-    DB_USER="ihub-d"
-    DB_NAME="ajpprodjjuctiondb"
+    DB_HOST="Hostnmae"
+    DB_USER="username"
+    DB_NAME="dbname"
     DB_PASSWORD='your-secure-password'  # Store sensitive information in a secure manner (e.g., environment variables)
-    S3_BUCKET="s3://ideahubdbbackup/rds-postgrees-db-backup/"
+    S3_BUCKET="s3://example/"
 
     # Date and file naming setup
     TIMESTAMP=$(date +%y_%m_%d)
     BACKUP_FILE="${DB_NAME}_${TIMESTAMP}_backup.dump"
-    BACKUP_PATH="/home/ubuntu/ajp-DB-backup/$BACKUP_FILE"
-    LOG_FILE="/home/ubuntu/ajp-DB-backup/${DB_NAME}_${TIMESTAMP}.log"
+    BACKUP_PATH="/home/ubuntu/$BACKUP_FILE"
+    LOG_FILE="/home/ubuntu/${DB_NAME}_${TIMESTAMP}.log"
 
     # Create log file and set permissions
     touch "$LOG_FILE"
@@ -100,7 +100,7 @@ step 1 :
         fi
 
         # Optional: Cleanup old backups (e.g., older than 7 days)
-        find /home/ubuntu/ajp-DB-backup/ -type f -name "${DB_NAME}_*_backup.dump" -mtime +20 -exec rm {} \;
+        find /home/ubuntu/ -type f -name "${DB_NAME}_*_backup.dump" -mtime +20 -exec rm {} \;
 
         echo "---- Backup Ended on $(date) ----"
     } >> "$LOG_FILE" 2>&1
@@ -116,17 +116,17 @@ step 1 :
 
 <h3><u>Restore the Backup</u></h3>
 
-    aws s3 cp s3://ideahubdbbackup/ajp-db-backup/ajpproductiondb_2025_01_15_08:17PM_backup.dump /home/ubuntu
+    aws s3 cp s3://filename-backup.dump /home/ubuntu
 
 
 <h1><u> To restore your PostgreSQL backup file</u></h1>
 
 example:
 
-    PGPASSWORD='new_password' pg_restore -h target_host -U new_user -d new_database --no-owner --no-privileges --clean -v /home/ubuntu/ajpproductiondb_2025_01_08_09:00PM_backup.dump
+    PGPASSWORD='new_password' pg_restore -h target_host -U new_user -d new_database --no-owner --no-privileges --clean -v /home/ubuntu/filename-backup.dump
 
 
-    PGPASSWORD='trd$Xc*LTju3OrqzM#VVb' pg_restore -h 52.53.247.30 -U ihub -d ajpproductiondb --no-owner --no-privileges --clean -v /home/ubuntu/ajpproductiondb_2025_01_15_08:17PM_backup.dump
+    PGPASSWORD='trd$Xyu6ju3OrqzM#VVb' pg_restore -h hostname -U ihub -d dbnmae --no-owner --no-privileges --clean -v /home/ubuntu/filename_backup.dump
 --no-owner Restore with no owner "" --no-privileges no privileges "" --clean clear  DB before  restore 
 
 <h3>command details :</h3>
@@ -143,26 +143,18 @@ example:
 Step : final:
 
  Run below cmd after resote and if any permission issue happend 
-open specific db or go to specific db by cmd or  pgadmin4 then run this cmd 
+open specific db or go to specific db by cmd or  pgadmin4 then run the following cmd 
 
  ```bash
- GRANT ALL PRIVILEGES ON DATABASE bdgen24new TO bdgen24newuser;
+ GRANT ALL PRIVILEGES ON DATABASE dbname TO username;
 
 
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO bdgen24newuser;
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO bdgen24newuser;
-GRANT USAGE ON SCHEMA public TO bdgen24newuser;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO username;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO username;
+GRANT USAGE ON SCHEMA public TO username;
 
 ```
 
- ```bash
-GRANT ALL PRIVILEGES ON DATABASE "amardesh-db" TO "amardesh-db-user";
-
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO "amardesh-db-user";
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO "amardesh-db-user";
-GRANT USAGE ON SCHEMA public TO "amardesh-db-user";
-
-```
 
 
 change table  ownership:
@@ -178,10 +170,12 @@ BEGIN
         FROM pg_tables 
         WHERE schemaname = 'public' -- Replace 'public' with your schema name if different
     LOOP
-        EXECUTE format('ALTER TABLE public.%I OWNER TO amardesh-db-user;', tbl.tablename);
+        EXECUTE format('ALTER TABLE public.%I OWNER TO username;', tbl.tablename);
     END LOOP;
 END $$;
 ```
+
+
 <h3>Change DB View Owner  </h3>
 
  ```bash
@@ -192,57 +186,18 @@ BEGIN
     FOR v_name IN 
         SELECT table_name FROM information_schema.views WHERE table_schema = 'public'
     LOOP 
-        EXECUTE format('ALTER VIEW public.%I OWNER TO ajpproductiondbuser', v_name);
+        EXECUTE format('ALTER VIEW public.%I OWNER TO username', v_name);
     END LOOP;
 END $$;
 
 ```
 
-Db size:
+# Db size:
 
 ```bash
 SELECT pg_size_pretty(pg_database_size('your_database_name')) AS database_size;
 ```
 
-```bash
-GRANT ALL PRIVILEGES ON DATABASE ajpakup TO ajpuser;
-
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO ajpuser;
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO ajpuser;
-GRANT USAGE ON SCHEMA public TO ajpuser;
-
-
-DO $$
-DECLARE
-    tbl RECORD;
-BEGIN
-    FOR tbl IN 
-        SELECT tablename 
-        FROM pg_tables 
-        WHERE schemaname = 'public' -- Replace 'public' with your schema name if different
-    LOOP
-        EXECUTE format('ALTER TABLE public.%I OWNER TO ajpuser;', tbl.tablename);
-    END LOOP;
-END $$;
-
-
-DO $$ 
-DECLARE 
-    v_name TEXT;
-BEGIN 
-    FOR v_name IN 
-        SELECT table_name FROM information_schema.views WHERE table_schema = 'public'
-    LOOP 
-        EXECUTE format('ALTER VIEW public.%I OWNER TO ajpproductiondbuser', v_name);
-    END LOOP;
-END $$;
-
-
-
-
-SELECT pg_size_pretty(pg_database_size('ajpakup')) AS database_size;
-
-```
-<h3> Total Database List on Server  </h3>
+<h3> Total Database List check cmd</h3>
 
     SELECT datname FROM pg_database;
