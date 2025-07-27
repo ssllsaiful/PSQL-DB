@@ -1,5 +1,7 @@
 # Create a backup script for automatic backup db and save the .dump files 
 
+```bash
+
 #!/bin/bash
 
 # PostgreSQL RDS credentials
@@ -51,3 +53,5 @@ for DB_NAME in "${DB_NAMES[@]}"; do
         echo "Failed to create backup for $DB_NAME."
     fi
 done
+
+```
