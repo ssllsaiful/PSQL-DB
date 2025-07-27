@@ -1,15 +1,15 @@
 <p>This commnad will backup and restore directly ;
-form one database to current database without lossing any 
+form one database Server to another database Server  without lossing any 
 DB;
 Permission;
 Table;
+
 </p>
 
+<p>Its will  only work on server . not for  manageable DB like AWS RDS </p>
 
-<p>Its only work on server base no manageable DB like AWS RDS will work on it </p>
 
-
-<p><h4>This will Restore full of DataBase for One Server to another Server</h4></p>
+<p><h4>This will Restore full of DataBase from One Server to another Server</h4></p>
 
 
 <h3> BACKUP full DB FROM EXISTING DB  </h3>
