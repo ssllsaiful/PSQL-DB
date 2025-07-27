@@ -18,10 +18,10 @@ sed -i "/# IPv4 local connections:/a host    all             all             0.0
 # Restart PostgreSQL to apply configuration changes
 systemctl restart postgresql
 
+#show server status
+sudo systemctl status postgresql
+
 # Create a database and a user (update variables as needed)
 sudo -u postgres psql -c "CREATE USER usernmae WITH PASSWORD "xyz";"
-sudo -u postgres psql -c "CREATE DATABASE ajpproductiondb;"
+sudo -u postgres psql -c "CREATE DATABASE dbname;"
 sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE dbname TO dbuser;"
-
-
-echo "PostgreSQL installation and configuration complete."
